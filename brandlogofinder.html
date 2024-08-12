@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Logo Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+        }
+
+        #brandInput, #searchButton {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .result-item img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Brand Logo Finder</h1>
+        <button id="closeButton">Close</button>
+    </header>
+    <main>
+        <input type="text" id="brandInput" placeholder="Enter brand name">
+        <button id="searchButton">Search</button>
+        <div id="results"></div>
+    </main>
+    <script>
+        document.getElementById('searchButton').addEventListener('click', () => {
+            const brandName = document.getElementById('brandInput').value;
+            searchBrandLogo(brandName);
+        });
+
+        document.getElementById('brandInput').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const brandName = document.getElementById('brandInput').value;
+                searchBrandLogo(brandName);
+            }
+        });
+
+        document.getElementById('closeButton').addEventListener('click', () => {
+            window.close();
+        });
+
+        async function searchBrandLogo(brandName) {
+            const apiKey = 'AIzaSyBBfIMa3v9pXwth8QQcHUCCk_puegYrbP8';
+            const cx = '561bbb9c0c8014a2f';
+            const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(brandName + ' logo')}&cx=${cx}&searchType=image&key=${apiKey}&num=10&imgColorType=trans`;
+
+            const response = await fetch(searchUrl);
+            const data = await response.json();
+            
+            displayResults(data.items);
+        }
+
+        function displayResults(items) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            items.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                const img = document.createElement('img');
+                img.src = item.link;
+                img.alt = item.title;
+
+                resultItem.appendChild(img);
+                resultsContainer.appendChild(resultItem);
+            });
+        }
+    </script>
+</body>
+</html>
